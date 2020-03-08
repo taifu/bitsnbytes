@@ -26,7 +26,10 @@ class Piece:
         self.sides = tuple(int(bits[n:n + 2], 2) for n in range(0, 7, 2))
         self.rotates = []
         for rotate in set(((self.sides + self.sides)[n:n + 4] for n in range(4))):
-            self.rotates.append(dict((n, v if n < 2 else int(bin(v)[2:][::-1], 2)) for n, v in enumerate(rotate)))
+            self.rotates.append(dict((n, v if n < 2 else int("{:02b}".format(v)[::-1], 2)) for n, v in enumerate(rotate)))
+
+    def __repr__(self):
+        return "{0: >3} {1:0>8}: {2}".format(self.id, bin(self.id)[2:], self.rotates)
 
 
 def check(board, pos):
@@ -42,7 +45,7 @@ def check(board, pos):
 
 def explore(board, pieces, positions, solution=[]):
     if not pieces:
-        print(" ".join(str(p) for p in solution))
+        print(" ".join(str(p) for (p, r) in solution))
         return
     pos, positions = positions[0], positions[1:]
     for n, piece in enumerate(pieces):
@@ -50,10 +53,12 @@ def explore(board, pieces, positions, solution=[]):
         for rotate in piece.rotates:
             board[pos] = rotate
             if check(board, pos):
-                explore(board, lefts, positions, solution + [piece.id])
+                explore(board, lefts, positions, solution + [(piece.id, rotate)])
             del board[pos]
 
 
-solutions = explore({1: {2: 0b01}, 4: {2: 0b01}, 6: {1: 0b10}, 11: {3: 0b01},
-                     24: {1: 0b10}, 29: {2: 0b01}, 31: {0: 0b10}, 34: {3: 0b10}},
+solutions = explore({1: {2: 0b01}, 4: {2: 0b01},
+                     6: {1: 0b10}, 24: {1: 0b10},
+                     11: {3: 0b01}, 29: {3: 0b01},
+                     31: {0: 0b10}, 34: {3: 0b10}},
                     [Piece(bits) for bits in PIECES.split("\n")], POSITIONS)
