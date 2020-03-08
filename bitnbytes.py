@@ -60,5 +60,5 @@ def explore(board, pieces, positions, solution=[]):
 solutions = explore({1: {2: 0b01}, 4: {2: 0b01},
                      6: {1: 0b10}, 24: {1: 0b10},
                      11: {3: 0b01}, 29: {3: 0b01},
-                     31: {0: 0b10}, 34: {3: 0b10}},
+                     31: {0: 0b10}, 34: {0: 0b10}},
                     [Piece(bits) for bits in PIECES.split("\n")], POSITIONS)
